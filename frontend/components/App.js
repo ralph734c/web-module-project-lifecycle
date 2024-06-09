@@ -35,7 +35,10 @@ export default class App extends React.Component {
     axios
       .post(URL, { name: this.state.newTodoName })
       .then((res) => {
-        this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data) })
+        this.setState({
+          ...this.state,
+          todos: this.state.todos.concat(res.data.data),
+        });
         this.resetForm();
       })
       .catch(this.updateApiResponseError);
@@ -54,6 +57,20 @@ export default class App extends React.Component {
       })
       .catch(this.updateApiResponseError);
   };
+  toggleTodoCompleted = (id) => () => {
+    axios
+      .patch(`${URL}/${id}`)
+      .then((res) => {
+        this.setState({
+          ...this.state,
+          todos: this.state.todos.map((todo) => {
+            if (todo.id !== id) return todo;
+            return res.data.data;
+          }),
+        });
+      })
+      .catch(this.updateApiResponseError);
+  };
 
   componentDidMount() {
     this.getTodos();
@@ -68,7 +85,16 @@ export default class App extends React.Component {
           "Success!"
         )}
         {this.state.todos.map((todo) => {
-          return <div key={todo.id}>{todo.name}</div>;
+          return (
+            <div
+              onClick={this.toggleTodoCompleted(todo.id)}
+              key={todo.id}
+              id={todo.completed ? "todo-complete" : "todo"}
+            >
+              {todo.name}
+              {todo.completed ? " 🔥" : ""}
+            </div>
+          );
         })}
         <form onSubmit={this.onTodoSubmit}>
           <input
