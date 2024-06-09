@@ -9,14 +9,11 @@ export default class TodoList extends React.Component {
         {this.props.todos.reduce((acc, todo) => {
           if (this.props.displayComplete || !todo.completed)
             return acc.concat(
-              <div
-                onClick={this.props.toggleTodoCompleted(todo.id)}
+              <Todo
                 key={todo.id}
-                id={todo.completed ? "todo-complete" : "todo"}
-              >
-                {todo.name}
-                {todo.completed ? " 🔥" : ""}
-              </div>
+                toggleTodoCompleted={this.props.toggleTodoCompleted}
+                todo={todo}
+              />
             );
           return acc;
         }, [])}
