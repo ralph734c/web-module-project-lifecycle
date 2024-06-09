@@ -12,6 +12,7 @@ export default class App extends React.Component {
       todos: [],
       error: "",
       newTodoName: "",
+      displayComplete: true,
     };
   }
 
@@ -72,6 +73,13 @@ export default class App extends React.Component {
       .catch(this.updateApiResponseError);
   };
 
+  clearCompletedTodos = () => {
+    this.setState({
+      ...this.state,
+      displayComplete: !this.state.displayComplete,
+    });
+  };
+
   componentDidMount() {
     this.getTodos();
   }
@@ -84,18 +92,20 @@ export default class App extends React.Component {
         ) : (
           "Success!"
         )}
-        {this.state.todos.map((todo) => {
-          return (
-            <div
-              onClick={this.toggleTodoCompleted(todo.id)}
-              key={todo.id}
-              id={todo.completed ? "todo-complete" : "todo"}
-            >
-              {todo.name}
-              {todo.completed ? " 🔥" : ""}
-            </div>
-          );
-        })}
+        {this.state.todos.reduce((acc, todo) => {
+          if (this.state.displayComplete || !todo.completed)
+            return acc.concat(
+              <div
+                onClick={this.toggleTodoCompleted(todo.id)}
+                key={todo.id}
+                id={todo.completed ? "todo-complete" : "todo"}
+              >
+                {todo.name}
+                {todo.completed ? " 🔥" : ""}
+              </div>
+            );
+          return acc;
+        }, [])}
         <form onSubmit={this.onTodoSubmit}>
           <input
             value={this.state.todoName}
@@ -105,8 +115,10 @@ export default class App extends React.Component {
           />
           <button type="submit">Submit</button> <br />
           <br />
-          <button>Hide Completed</button>
         </form>
+        <button onClick={this.clearCompletedTodos}>
+          {this.state.displayComplete ? "Hide" : "Show"} Completed
+        </button>
       </div>
     );
   }
