@@ -1,7 +1,11 @@
-import React from 'react'
+import React from "react";
 
 export default class Todo extends React.Component {
   render() {
-    return null
+    return (
+      <>
+        <p>Todo Component</p>
+      </>
+    );
   }
 }
