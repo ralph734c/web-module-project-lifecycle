@@ -26,7 +26,7 @@ export default class App extends React.Component {
       error: err.response.data.message,
     });
   };
-  
+
   resetForm = () => {
     this.setState({ ...this.state, todoName: "" });
   };
@@ -35,7 +35,7 @@ export default class App extends React.Component {
     axios
       .post(URL, { name: this.state.newTodoName })
       .then((res) => {
-        this.getTodos();
+        this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data) })
         this.resetForm();
       })
       .catch(this.updateApiResponseError);
